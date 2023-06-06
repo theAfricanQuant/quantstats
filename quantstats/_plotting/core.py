@@ -77,7 +77,7 @@ def plot_returns_bars(returns, benchmark=None,
     if match_volatility and benchmark is None:
         raise ValueError('match_volatility requires passing of '
                          'benchmark.')
-    if match_volatility and benchmark is not None:
+    if match_volatility:
         bmark_vol = benchmark.loc[returns.index].std()
         returns = (returns / returns.std()) * bmark_vol
 
@@ -127,7 +127,7 @@ def plot_returns_bars(returns, benchmark=None,
     # ax.fmt_xdata = _mdates.DateFormatter('%Y-%m-%d')
     # years = sorted(list(set(df.index.year)))
     if len(years) > 10:
-        mod = int(len(years)/10)
+        mod = len(years) // 10
         _plt.xticks(_np.arange(len(years)), [
             str(year) if not i % mod else '' for i, year in enumerate(years)])
 
@@ -176,10 +176,7 @@ def plot_returns_bars(returns, benchmark=None,
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_timeseries(returns, benchmark=None,
@@ -200,7 +197,7 @@ def plot_timeseries(returns, benchmark=None,
     if match_volatility and benchmark is None:
         raise ValueError('match_volatility requires passing of '
                          'benchmark.')
-    if match_volatility and benchmark is not None:
+    if match_volatility:
         bmark_vol = benchmark.std()
         returns = (returns / returns.std()) * bmark_vol
 
@@ -305,10 +302,7 @@ def plot_timeseries(returns, benchmark=None,
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_histogram(returns, resample="M", bins=20,
@@ -391,10 +385,7 @@ def plot_histogram(returns, resample="M", bins=20,
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_rolling_stats(returns, benchmark=None, title="",
@@ -473,10 +464,7 @@ def plot_rolling_stats(returns, benchmark=None, title="",
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_rolling_beta(returns, benchmark,
@@ -552,10 +540,7 @@ def plot_rolling_beta(returns, benchmark,
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_longest_drawdowns(returns, periods=5, lw=1.5,
@@ -564,10 +549,7 @@ def plot_longest_drawdowns(returns, periods=5, lw=1.5,
                            subtitle=True, compounded=True,
                            savefig=None, show=True):
 
-    colors = ['#348dc1', '#003366', 'red']
-    if grayscale:
-        colors = ['#000000'] * 3
-
+    colors = ['#000000'] * 3 if grayscale else ['#348dc1', '#003366', 'red']
     dd = _stats.to_drawdown_series(returns.fillna(0))
     dddf = _stats.drawdown_details(dd)
     longest_dd = dddf.sort_values(
@@ -638,10 +620,7 @@ def plot_longest_drawdowns(returns, periods=5, lw=1.5,
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_distribution(returns, figsize=(10, 6),
@@ -726,10 +705,7 @@ def plot_distribution(returns, figsize=(10, 6),
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def plot_table(tbl, columns=None, title="", title_loc="left",
@@ -811,10 +787,7 @@ def plot_table(tbl, columns=None, title="", title_loc="left",
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def format_cur_axis(x, _):

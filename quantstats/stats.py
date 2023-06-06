@@ -229,10 +229,7 @@ def volatility(returns, periods=252, annualize=True, prepare_returns=True):
     if prepare_returns:
         returns = _utils._prepare_returns(returns)
     std = returns.std()
-    if annualize:
-        return std * _np.sqrt(periods)
-
-    return std
+    return std * _np.sqrt(periods) if annualize else std
 
 
 def rolling_volatility(returns, rolling_period=126, periods_per_year=252,
@@ -292,11 +289,9 @@ def sharpe(returns, rf=0., periods=252, annualize=True, smart=False):
         divisor = divisor * autocorr_penalty(returns)
     res = returns.mean() / divisor
 
-    if annualize:
-        return res * _np.sqrt(
-            1 if periods is None else periods)
-
-    return res
+    return (
+        res * _np.sqrt(1 if periods is None else periods) if annualize else res
+    )
 
 
 def smart_sharpe(returns, rf=0., periods=252, annualize=True):
@@ -346,11 +341,9 @@ def sortino(returns, rf=0, periods=252, annualize=True, smart=False):
 
     res = returns.mean() / downside
 
-    if annualize:
-        return res * _np.sqrt(
-            1 if periods is None else periods)
-
-    return res
+    return (
+        res * _np.sqrt(1 if periods is None else periods) if annualize else res
+    )
 
 
 def smart_sortino(returns, rf=0, periods=252, annualize=True):
@@ -408,10 +401,7 @@ def omega(returns, rf=0.0, required_return=0.0, periods=252):
     numer = returns_less_thresh[returns_less_thresh > 0.0].sum().values[0]
     denom = -1.0 * returns_less_thresh[returns_less_thresh < 0.0].sum().values[0]
 
-    if denom > 0.0:
-        return numer / denom
-
-    return _np.nan
+    return numer / denom if denom > 0.0 else _np.nan
 
 
 def gain_to_pain_ratio(returns, rf=0, resolution="D"):
@@ -433,11 +423,7 @@ def cagr(returns, rf=0., compounded=True):
     In this case, rf is assumed to be expressed in yearly (annualized) terms
     """
     total = _utils._prepare_returns(returns, rf)
-    if compounded:
-        total = comp(total)
-    else:
-        total = _np.sum(total)
-
+    total = comp(total) if compounded else _np.sum(total)
     years = (returns.index[-1] - returns.index[0]).days / 365.
 
     res = abs(total + 1.0) ** (1.0 / years) - 1
@@ -868,10 +854,7 @@ def compare(returns, benchmark, aggregate=None, compounded=True,
     data['Multiplier'] = data['Returns'] / data['Benchmark']
     data['Won'] = _np.where(data['Returns'] >= data['Benchmark'], '+', '-')
 
-    if round_vals is not None:
-        return _np.round(data, round_vals)
-
-    return data
+    return _np.round(data, round_vals) if round_vals is not None else data
 
 
 def monthly_returns(returns, eoy=True, compounded=True, prepare_returns=True):

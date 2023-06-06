@@ -167,10 +167,7 @@ def snapshot(returns, grayscale=False, figsize=(10, 8),
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def earnings(returns, start_balance=1e5, mode="comp",
@@ -247,10 +244,7 @@ def earnings(returns, start_balance=1e5, mode="comp",
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def returns(returns, benchmark=None,
@@ -264,7 +258,7 @@ def returns(returns, benchmark=None,
     title = 'Cumulative Returns' if compound else 'Returns'
     if benchmark is not None:
         if isinstance(benchmark, str):
-            title += ' vs %s' % benchmark.upper()
+            title += f' vs {benchmark.upper()}'
         else:
             title += ' vs Benchmark'
         if match_volatility:
@@ -303,7 +297,7 @@ def log_returns(returns, benchmark=None,
     title = 'Cumulative Returns' if compound else 'Returns'
     if benchmark is not None:
         if isinstance(benchmark, str):
-            title += ' vs %s (Log Scaled' % benchmark.upper()
+            title += f' vs {benchmark.upper()} (Log Scaled'
         else:
             title += ' vs Benchmark (Log Scaled'
         if match_volatility:
@@ -431,27 +425,30 @@ def histogram(returns, resample='M', fontname='Arial',
     if prepare_returns:
         returns = _utils._prepare_returns(returns)
 
-    if resample == 'W':
-        title = "Weekly "
+    if resample == 'A':
+        title = "Annual "
     elif resample == 'M':
         title = "Monthly "
     elif resample == 'Q':
         title = "Quarterly "
-    elif resample == 'A':
-        title = "Annual "
+    elif resample == 'W':
+        title = "Weekly "
     else:
         title = ""
 
-    return _core.plot_histogram(returns,
-                                resample=resample,
-                                grayscale=grayscale,
-                                fontname=fontname,
-                                title="Distribution of %sReturns" % title,
-                                figsize=figsize,
-                                ylabel=ylabel,
-                                subtitle=subtitle,
-                                compounded=compounded,
-                                savefig=savefig, show=show)
+    return _core.plot_histogram(
+        returns,
+        resample=resample,
+        grayscale=grayscale,
+        fontname=fontname,
+        title=f"Distribution of {title}Returns",
+        figsize=figsize,
+        ylabel=ylabel,
+        subtitle=subtitle,
+        compounded=compounded,
+        savefig=savefig,
+        show=show,
+    )
 
 
 def drawdown(returns, grayscale=False, figsize=(10, 5),
@@ -540,17 +537,21 @@ def rolling_volatility(returns, benchmark=None,
         benchmark = _stats.rolling_volatility(
             benchmark, period, periods_per_year, prepare_returns=False)
 
-    fig = _core.plot_rolling_stats(returns, benchmark,
-                                   hline=returns.mean(),
-                                   hlw=1.5,
-                                   ylabel=ylabel,
-                                   title='Rolling Volatility (%s)' % period_label,
-                                   fontname=fontname,
-                                   grayscale=grayscale,
-                                   lw=lw,
-                                   figsize=figsize,
-                                   subtitle=subtitle,
-                                   savefig=savefig, show=show)
+    fig = _core.plot_rolling_stats(
+        returns,
+        benchmark,
+        hline=returns.mean(),
+        hlw=1.5,
+        ylabel=ylabel,
+        title=f'Rolling Volatility ({period_label})',
+        fontname=fontname,
+        grayscale=grayscale,
+        lw=lw,
+        figsize=figsize,
+        subtitle=subtitle,
+        savefig=savefig,
+        show=show,
+    )
     if not show:
         return fig
 
@@ -571,17 +572,21 @@ def rolling_sharpe(returns, benchmark=None, rf=0.,
             benchmark, rf, period, True, periods_per_year,
             prepare_returns=False)
 
-    fig = _core.plot_rolling_stats(returns, benchmark,
-                                   hline=returns.mean(),
-                                   hlw=1.5,
-                                   ylabel=ylabel,
-                                   title='Rolling Sharpe (%s)' % period_label,
-                                   fontname=fontname,
-                                   grayscale=grayscale,
-                                   lw=lw,
-                                   figsize=figsize,
-                                   subtitle=subtitle,
-                                   savefig=savefig, show=show)
+    fig = _core.plot_rolling_stats(
+        returns,
+        benchmark,
+        hline=returns.mean(),
+        hlw=1.5,
+        ylabel=ylabel,
+        title=f'Rolling Sharpe ({period_label})',
+        fontname=fontname,
+        grayscale=grayscale,
+        lw=lw,
+        figsize=figsize,
+        subtitle=subtitle,
+        savefig=savefig,
+        show=show,
+    )
     if not show:
         return fig
 
@@ -602,17 +607,21 @@ def rolling_sortino(returns, benchmark=None, rf=0.,
             benchmark, rf, period, True, periods_per_year,
             prepare_returns=False)
 
-    fig = _core.plot_rolling_stats(returns, benchmark,
-                                   hline=returns.mean(),
-                                   hlw=1.5,
-                                   ylabel=ylabel,
-                                   title='Rolling Sortino (%s)' % period_label,
-                                   fontname=fontname,
-                                   grayscale=grayscale,
-                                   lw=lw,
-                                   figsize=figsize,
-                                   subtitle=subtitle,
-                                   savefig=savefig, show=show)
+    fig = _core.plot_rolling_stats(
+        returns,
+        benchmark,
+        hline=returns.mean(),
+        hlw=1.5,
+        ylabel=ylabel,
+        title=f'Rolling Sortino ({period_label})',
+        fontname=fontname,
+        grayscale=grayscale,
+        lw=lw,
+        figsize=figsize,
+        subtitle=subtitle,
+        savefig=savefig,
+        show=show,
+    )
     if not show:
         return fig
 
@@ -690,10 +699,7 @@ def monthly_heatmap(returns, annot_size=10, figsize=(10, 5),
 
     _plt.close()
 
-    if not show:
-        return fig
-
-    return None
+    return fig if not show else None
 
 
 def monthly_returns(returns, annot_size=10, figsize=(10, 5),

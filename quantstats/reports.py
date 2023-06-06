@@ -100,9 +100,7 @@ def html(returns, benchmark=None, rf=0., grayscale=False,
             returns, benchmark, "A", compounded=compounded,
             prepare_returns=False)
         yoy.columns = ['Benchmark', 'Strategy', 'Multiplier', 'Won']
-        yoy.index.name = 'Year'
         tpl = tpl.replace('{{eoy_title}}', '<h3>EOY Returns vs Benchmark</h3>')
-        tpl = tpl.replace('{{eoy_table}}', _html_table(yoy))
     else:
         # pct multiplier
         yoy = _pd.DataFrame(
@@ -113,10 +111,9 @@ def html(returns, benchmark=None, rf=0., grayscale=False,
         yoy['Return'] = yoy['Return'].round(2).astype(str) + '%'
         yoy['Cumulative'] = (yoy['Cumulative'] *
                              100).round(2).astype(str) + '%'
-        yoy.index.name = 'Year'
         tpl = tpl.replace('{{eoy_title}}', '<h3>EOY Returns</h3>')
-        tpl = tpl.replace('{{eoy_table}}', _html_table(yoy))
-
+    yoy.index.name = 'Year'
+    tpl = tpl.replace('{{eoy_table}}', _html_table(yoy))
     dd = _stats.to_drawdown_series(returns)
     dd_info = _stats.drawdown_details(dd).sort_values(
         by='max drawdown', ascending=True)[:10]
@@ -703,11 +700,7 @@ def _calc_dd(df, display=True, as_pct=False):
     if dd_info.empty:
         return _pd.DataFrame()
 
-    if "returns" in dd_info:
-        ret_dd = dd_info['returns']
-    else:
-        ret_dd = dd_info
-
+    ret_dd = dd_info['returns'] if "returns" in dd_info else dd_info
     dd_stats = {
         'returns': {
             'Max Drawdown %': ret_dd.sort_values(
@@ -719,7 +712,7 @@ def _calc_dd(df, display=True, as_pct=False):
             'Avg. Drawdown Days': str(_np.round(ret_dd['days'].mean()))
         }
     }
-    if "benchmark" in df and (dd_info.columns, _pd.MultiIndex):
+    if "benchmark" in df:
         bench_dd = dd_info['benchmark'].sort_values(by='max drawdown')
         dd_stats['benchmark'] = {
             'Max Drawdown %': bench_dd.sort_values(
@@ -784,4 +777,4 @@ def _embed_figure(figfile, figfmt):
     if figfmt == 'svg':
         return figbytes.decode()
     data_uri = _b64encode(figbytes).decode()
-    return '<img src="data:image/{};base64,{}" />'.format(figfmt, data_uri)
+    return f'<img src="data:image/{figfmt};base64,{data_uri}" />'

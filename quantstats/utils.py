@@ -296,10 +296,7 @@ def _in_notebook(matplotlib_inline=False):
             if matplotlib_inline:
                 get_ipython().magic("matplotlib inline")
             return True
-        if shell == 'TerminalInteractiveShell':
-            # Terminal running IPython
-            return False
-        # Other type (?)
+        # Terminal running IPython
         return False
     except NameError:
         # Probably standard Python interpreter
